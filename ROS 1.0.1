@@ -1,0 +1,86 @@
+#include<iostream>
+#include<time.h>
+#include<stdlib.h>
+#include<stdio.h>
+using namespace std;
+
+bool runwayfree=true;
+
+struct plane
+{
+    string name;
+    int fuel;
+    int passengers;
+    int staff_present;
+    int staff_required; //Total requirement for it to be able to fly
+    bool priority=false;
+};
+
+int staff_available=3; //staff available on the ground ready to fly
+int numberplanes;
+int n;
+struct plane a[10];
+
+void enterdetails()
+{
+    srand (time(0));
+    cout<<"Enter number of planes arriving at the Airport: ";
+    cin>>n;
+    for(int i=0;i<n;i++)
+    {
+        cout<<"\n Enter plane name for plane "<<i+1<<": ";
+        cin>>a[i].name;
+        cout<<" Enter number of passengers in plane "<<a[i].name<<": ";
+        cin>>a[i].passengers;
+        char priority_choice;
+        cout<<" Is it a VIP plane?(y/n): ";
+        cin>>priority_choice;
+        if(priority_choice=='y'||priority_choice=='Y')
+        {
+            a[i].priority=true;
+        }
+        else if(priority_choice=='n'||priority_choice=='N')
+        {
+            a[i].priority=false;
+        }
+        else
+        {
+            cout<<"Invalid Input";
+        }
+        a[i].fuel=(rand() % 100 + 50)%100;
+        cout<<" Fuel in Plane "<<a[i].name<<": "<<a[i].fuel;
+        a[i].staff_present=rand() % 10 + 3;
+        cout<<endl<<" Staff present in plane "<<a[i].name<<" is: "<<a[i].staff_present<<"\n";
+    }
+
+}
+
+
+void land_check()
+{
+
+}
+
+/*void staff_offload(plane A)
+{
+    staff_available=staff_available + A.staff_present;
+    A.staff_present=0;
+}
+
+void staff_loading(plane A)
+{
+    if(A.staff_required>staff_available)
+    {
+        cout<<"Complete staff no available right now! please wait";
+    }
+    else
+    {
+        A.staff_present=A.staff_required;
+        staff_available=staff_available-A.staff_required;
+    }
+}*/
+
+int main()
+{
+    enterdetails();
+}

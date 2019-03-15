@@ -1,0 +1,86 @@
+#include<iostream>
+#include<stdio.h>
+#include<windows.h>
+
+using namespace std;
+
+int timer=0;
+
+struct plane
+{
+    string name;
+    int arr_time;
+    int passengers;
+
+}a[5];
+
+void input()
+{
+    for(int i=0;i<5;i++)
+    {
+     cout<<endl<<"Enter Plane name: ";
+     cin>>a[i].name;
+     cout<<"Enter Arrival order: ";
+     cin>>a[i].arr_time;
+     cout<<"Enter Passenger count: ";
+     cin>>a[i].passengers;
+    }
+
+    for(int i=0;i<5;i++)
+    {
+     for(int j=0;j<4;j++)
+    {
+      if(a[j].passengers>a[j+1].passengers)
+      {
+      plane t;
+      t=a[j+1];
+      a[j+1]=a[j];
+      a[j]=t;
+      }
+    }
+     }
+}
+
+int c[5]={1,1,1,1,1};
+
+void process()
+{
+  int count=0;
+
+  int flag[5]={0,0,0,0,0};
+  do
+  {
+  for(int i=0;i<5;i++)
+  {
+    a[i].passengers-=10;
+    if(flag[i]==0)
+    {
+     if(a[i].passengers<=0)
+     {
+       flag[i]=1;
+       cout<<endl<<"Offloading: "<<a[i].name<<"   No.of bus trips: "<<c[i];
+       count++;
+     }
+     else
+     {
+       c[i]++;
+     }
+
+    }
+  }
+  }while(count!=5);
+
+  int avg=0;
+  for(int i=0;i<5;i++)
+  {
+      avg=avg+c[i];
+  }
+  avg=avg/5;
+  cout<<endl<<"Average waiting time is: "<<avg*2;
+}
+
+int main()
+{
+    input();
+    process();
+}

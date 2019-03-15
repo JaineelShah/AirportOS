@@ -1,0 +1,33 @@
+#include<iostream>
+using namespace std;
+
+struct plane
+{
+    string name;
+    int fuel;
+    int passengers;
+    int staff_present;
+    int staff_required; //Total requirement for it to be able to fly
+    bool safe=false;
+};
+
+int staff_available=3; //staff available on the ground ready to fly
+
+void staff_offload(plane A)
+{
+    staff_available=staff_available + A.staff_present;
+    A.staff_present=0;
+}
+
+void staff_loading(plane A)
+{
+    if(A.staff_required>staff_available)
+    {
+        cout<<"Complete staff no available right now! please wait";
+    }
+    else
+    {
+        A.staff_present=A.staff_required;
+        staff_available=staff_available-A.staff_required;
+    }
+}

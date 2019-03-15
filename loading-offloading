@@ -1,0 +1,124 @@
+#include<iostream>
+#include<time.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include<windows.h>
+using namespace std;
+
+bool runwayfree=true;
+
+struct plane
+{
+    string name;
+    int fuel;
+    int passengers;
+    int staff_present;
+    int staff_required; //Total requirement for it to be able to fly
+    bool priority=false;
+};
+
+int takeoffindex=0;
+static int staff_available=3; //staff available on the ground ready to fly
+int n;
+struct plane a[10];
+struct plane takeoff[10];
+
+void enterdetails()
+{
+
+    cout<<"Enter number of planes arriving at the Airport: ";
+    cin>>n;
+    for(int i=0;i<n;i++)
+    {
+        cout<<"\n Enter plane name for plane "<<i+1<<": ";
+        cin>>a[i].name;
+        cout<<" Enter number of passengers in plane "<<a[i].name<<": ";
+        cin>>a[i].passengers;
+        char priority_choice;
+        cout<<" Is it a VIP plane?(y/n): ";
+        cin>>priority_choice;
+        if(priority_choice=='y'||priority_choice=='Y')
+        {
+            a[i].priority=true;
+        }
+        else if(priority_choice=='n'||priority_choice=='N')
+        {
+            a[i].priority=false;
+        }
+        else
+        {
+            cout<<"Invalid Input";
+        }
+        a[i].fuel=(rand() % 100 + 50)%100;
+        cout<<" Fuel in Plane "<<a[i].name<<": "<<a[i].fuel;
+        a[i].staff_present=rand() % 10 + 3;
+        cout<<endl<<" Staff present in plane "<<a[i].name<<" is: "<<a[i].staff_present<<"\n";
+    }
+
+}
+void createtakeofflist(plane A)
+{
+    takeoff[takeoffindex]=A;
+    takeoffindex++;
+}
+
+void staff_offload(plane A)
+{
+    cout<<endl<<"---offloading of staff begins---";
+    staff_available=staff_available + A.staff_present;
+    cout<<endl<<"---offloading of staff complete---";
+    Sleep(1500);
+    cout<<endl<<" Staff added to ground: "<<A.staff_present;
+    Sleep(1500);
+    cout<<endl;
+    A.staff_required=A.staff_present+ (rand()%2+1);
+    cout<<endl<<"---new staff required for takeoff---";
+    cout<<endl<<" New staff required for takeoff: "<<A.staff_required;
+    cout<<endl<<" Staff available on ground is: "<<staff_available;
+
+    if(A.staff_required>staff_available)
+    {
+        cout<<" Complete staff no available right now, please wait!";
+    }
+    else
+    {
+        cout<<endl<<"---Enough staff present on ground---";
+        Sleep(1500);
+        cout<<endl<<"---loading new staff on plane---";
+        A.staff_present=A.staff_required;
+        cout<<endl<<" Staff added: "<<A.staff_present;
+        cout<<endl<<"---new staff loaded on plane---";
+        Sleep(1500);
+        staff_available=staff_available-A.staff_required;
+        cout<<endl<<"---staff on ground---";
+        cout<<endl<<" Staff present on ground: "<<staff_available;
+        createtakeofflist(A);
+        cout<<endl<<"---plane added to takeoff list---";
+        cout<<endl;
+    }
+}
+
+void printtakeoff()
+{
+    cout<<endl;
+    cout<<endl<<"---Take off list is a follows---"<<endl;
+    for(int i=0;i<takeoffindex;i++)
+    {
+        Sleep(1500);
+        cout<<takeoff[i].name<<" <- ";
+    }
+}
+
+
+int main()
+{
+    srand (time(0));
+    enterdetails();
+    for(int i=0;i<n;i++)
+    {
+        staff_offload(a[i]);
+    }
+
+    printtakeoff();
+
+}

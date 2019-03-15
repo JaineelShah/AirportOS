@@ -1,0 +1,398 @@
+#include<iostream>
+#include<time.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include<windows.h>
+#include<unistd.h>
+#include<sstream>
+using namespace std;
+
+struct plane
+{
+    string name;
+    int index;
+    int fuel;
+    int passengers;
+    int staff_present;
+    int staff_required; //Total requirement for it to be able to fly
+    bool priority=false;
+}priority1[10];
+
+void bubbleSort();
+void VIPPlanes();
+void midWayRefuel();
+void LockRunway();
+void UnlockRunway();
+void LandPlane(int);
+int findSmallestElement();
+void swaps(int,int);
+void LandingProcedure();
+void createtakeofflist(plane);
+void staff_offload();
+void printtakeoff();
+void entername(int);
+int enterpassengers(int i);
+void enterpriority(int);
+void calculatefuel(int);
+void calculatestaff(int);
+int enternumber();
+
+struct plane offloading_queue[10];
+int countOfIndex=0;
+static int staff_available=3; //staff available on the ground ready to fly
+int n;
+struct plane a[10];
+int landingList[10];
+int refuelingList[10];
+int semaphore=0;
+int flag=0;
+int takeoffindex=0;
+int c[10];
+struct plane takeoff[10];
+
+int enternumber()
+{
+    string m;
+    int n;
+    cout<<" Enter number of planes(less than 10) arriving at the Airport: ";
+    cin>>m;
+    stringstream geek(m);
+    geek>>n;
+    if(n>=10||n==0)
+     {
+        cout<<"\n Invalid input. Taking default value of 1";
+        return 1;
+     }
+     else return n;
+}
+void entername(int i)
+{
+    cout<<"\n Enter plane name for plane "<<i+1<<": ";
+    cin>>a[i].name;
+}
+int enterpassengers(int i)
+{
+    string m;
+    int n;
+    cout<<" Enter number of passengers in plane "<<a[i].name<<": ";
+    cin>>m;
+    stringstream geek(m);
+    geek>>n;
+    if(n==0)
+     {
+        cout<<"\n Invalid input. Taking default value of 10"<<endl;
+        return 10;
+     }
+     else return n;
+}
+void enterpriority(int i)
+{
+    char priority_choice;
+        cout<<" Is it a VIP plane?(y/n): ";
+        cin>>priority_choice;
+        if(priority_choice=='y'||priority_choice=='Y')
+        {
+            a[i].priority=true;
+        }
+        else if(priority_choice=='n'||priority_choice=='N')
+        {
+            a[i].priority=false;
+        }
+        else
+        {
+            cout<<" Invalid Input";
+        }
+}
+void calculatefuel(int i)
+{
+    a[i].fuel=(rand() % 100 + 50)%100;
+    cout<<" Fuel in Plane "<<a[i].name<<": "<<a[i].fuel;
+}
+void calculatestaff(int i)
+{
+    a[i].staff_present=rand() % 10 + 3;
+    cout<<endl<<" Staff present in plane "<<a[i].name<<" is: "<<a[i].staff_present<<"\n";
+}
+void enterdetails()
+{
+
+    n=enternumber();
+    for(int i=0;i<n;i++)
+    {
+        entername(i);
+        a[i].passengers=enterpassengers(i);
+        enterpriority(i);
+        calculatefuel(i);
+        calculatestaff(i);
+        a[i].index=countOfIndex;
+        countOfIndex++;
+    }
+    cout<<endl;
+}
+
+int findSmallestElement()
+{
+       int temp = 0;
+       for(int i=0; i<n; i++) {
+          if(a[temp].fuel>a[i].fuel) {
+             temp=i;
+          }
+       }
+       return temp;
+}
+
+void swaps(int *xp, int *yp)
+{
+        int temp = *xp;
+        *xp = *yp;
+        *yp = temp;
+}
+
+void LandingProcedure()
+{
+    for(int i=0;i<n;i++)
+    {
+        LandPlane(a[i].index);
+    }
+    cout<<"\nAll aircrafts have landed successfully!"<<endl;
+    Sleep(3000);
+}
+
+void bubbleSort()
+{
+       int i,j;
+       for (i=0;i<n-1;i++)
+           for (j=0;j<n-i-1;j++)
+               if (a[j].fuel>a[j+1].fuel)
+                  swaps(&a[j].index, &a[j+1].index);
+}
+
+void VIPPlanes()
+{
+        int counter=0;
+        for(int i=0;i<n;i++)
+        {
+            if(a[i].priority==true)
+            {
+                swaps(&a[i].index, &a[counter].index);
+                counter++;
+            }
+        }
+}
+
+void midWayRefuel()
+{
+    for(int i=0;i<n;i++)
+    {
+        if(a[i].fuel<10*i)
+        {
+            cout<<" Plane needs mid-air refueling: "<<a[i].name<<endl;
+            a[i].fuel+=100;
+        }
+    }
+}
+
+void LockRunway()
+{
+    if(semaphore==0)
+    {
+        cout<<" Locking runway."<<endl;
+        Sleep(2000);
+        cout<<" Runway Locked.";
+        semaphore=1;
+    }
+    else
+        cout<<" Runway already locked.";
+}
+
+void UnlockRunway()
+{
+    if(semaphore==1)
+    {
+        cout<<" Unlocking runway."<<endl;
+        Sleep(1000);
+        cout<<" Runway unlocked successfully.\n";
+        semaphore=0;
+    }
+    else
+        cout<<" Runway already unlocked.";
+}
+
+void LandPlane(int index)
+{
+    LockRunway();
+    cout<<endl;
+    Sleep(1300);
+    cout<<endl<<" Plane "<<a[index].name<<" has landed successfully!\n";
+    UnlockRunway();
+    cout<<endl;
+}
+
+void createtakeofflist(plane A)
+{
+    takeoff[takeoffindex]=A;
+    takeoffindex++;
+}
+
+void staff_offload()
+{
+  cout<<"\n Starting staff & crew management!"<<endl;
+  for(int i=0;i<n;i++)
+  {
+    cout<<endl<<endl<<" Staff shift for plane "<<a[i].name<<"!\n";
+
+    Sleep(1500);
+    cout<<endl<<endl<<" Offloading of staff begins.";
+    staff_available=staff_available + a[i].staff_present;
+    cout<<endl<<" Staff available on ground: "<<staff_available;
+    cout<<endl<<" Offloading of staff complete.\n";
+    Sleep(3000);
+
+    int n=(rand()%2)+1;
+    a[i].staff_required=a[i].staff_present + n;
+
+    cout<<endl<<" New staff required for takeoff: "<<a[i].staff_required;
+    cout<<endl<<" Staff available on ground is: "<<staff_available<<"\n";
+
+    Sleep(3000);
+
+    if(a[i].staff_required>staff_available)
+    {
+        cout<<endl<<" Complete staff no available right now, please wait!\n";
+        Sleep(3000);
+    }
+    else
+    {
+        cout<<endl<<" Enough staff & crew present on ground. Good to go!";
+        Sleep(3000);
+        cout<<endl<<endl<<" Loading new staff & crew on plane.";
+        a[i].staff_present=a[i].staff_required;
+        cout<<endl<<" Staff added on board: "<<a[i].staff_present;
+        cout<<endl<<" Loading staff & crew on plane complete.";
+        Sleep(3000);
+        staff_available=staff_available-a[i].staff_required;
+        cout<<endl<<endl<<" Staff remaining present on ground: "<<staff_available;
+        createtakeofflist(a[i]);
+        cout<<endl<<endl<<" Plane added to takeoff list.";
+        cout<<endl;
+    }
+  }
+}
+
+void printtakeoff()
+{
+    cout<<endl;
+    cout<<endl<<" Take off list is as follows: ";
+    for(int i=0;i<takeoffindex;i++)
+    {
+        Sleep(1500);
+        cout<<takeoff[i].name<<" <- ";
+    }
+    cout<<"\n";
+}
+
+void arrangeByPassengers()
+{
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n-1;j++)
+        {
+            if(a[j].passengers>a[j+1].passengers)
+            {
+                plane t;
+                t=a[j+1];
+                a[j+1]=a[j];
+                a[j]=t;
+            }
+        }
+    }
+}
+
+void OffloadingAndFuel()
+{
+    int index=-1;
+    int count=0;
+    int flag[n]={0};
+    for(int i=0;i<n;i++)
+        c[i]=0;
+        cout<<"\n Offloading passengers!"<<endl;
+    do
+    {
+        for(int i=0;i<n;i++)
+        {
+            a[i].passengers-=10;
+            if(flag[i]==0)
+            {
+                if(a[i].passengers<=0)
+                {
+                    flag[i]=1;
+                    cout<<endl<<"Offloading: "<<a[i].name<<"   No.of bus trips: "<<c[i];
+                    Sleep(2000);
+                    index++;
+                    offloading_queue[index]=a[i];
+                    count++;
+                }
+                else
+                {
+                    c[i]++;
+                }
+
+            }
+        }
+    }while(count!=n);
+}
+
+void splitByPriority()
+{
+    int index=-1;
+    for(int i=0;i<n;i++)
+    {
+        if(offloading_queue[i].priority==true)
+        {
+            index++;
+            priority1[index]=a[i];
+        }
+    }
+    for(int i=0;i<n;i++)
+    {
+        if(offloading_queue[i].priority==false)
+        {
+            index++;
+            priority1[index]=a[i];
+        }
+    }
+    cout<<"\n Starting refueling of planes!"<<endl;
+
+
+    for(int i=0;i<n;i++)
+    {
+        //incrementing the fuel of every plane
+        while(priority1[i].fuel!=150)
+        {
+            //incrementing till fuel doesnt reach the cap limit of 150
+            priority1[i].fuel++;
+        }
+        cout<<endl<<"Plane "<<priority1[i].name<<" is done with refueling\n";
+        Sleep(2000);
+    }
+    for(int i=0;i<n;i++)
+    {
+        a[i]=priority1[i];
+    }
+}
+
+int main()
+{
+	srand (time(0));
+    enterdetails();
+    bubbleSort();
+    VIPPlanes();
+    midWayRefuel();
+    LandingProcedure();
+    arrangeByPassengers();
+    OffloadingAndFuel();
+    splitByPriority();
+    staff_offload();
+    printtakeoff();
+    return 0;
+}
