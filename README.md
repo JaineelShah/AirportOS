@@ -1,10 +1,12 @@
 # ROS1
 
+This is an Airport Runway Operating System designed to support and enhance airport operations from landside to airside, from landing to take off which simulate basic functionalities of an OS.
+
 //////////////////////////////
 Landing Scheduling: Jaineel
 staff maintenence:Shlok
 Landing protocol: Vvyom
-Interupt handling : Aditya Salian
+Interupt handling : Aditya
 /////////////////////////////
 
 
